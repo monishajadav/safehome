@@ -1,0 +1,235 @@
+/* ===== COMMON STYLES - Safe & Home Foundation ===== */
+
+* { font-family: 'Poppins', sans-serif; }
+html { scroll-behavior: smooth; }
+body { overflow-x: hidden; }
+
+/* NAVBAR */
+.navbar {
+  padding: 0.75rem 0;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+}
+.navbar-brand img { height: 80px; }
+.nav-link {
+  font-size: 0.95rem;
+  font-weight: 500;
+  padding: 0.5rem 1.3rem !important;
+  transition: color 0.2s;
+  letter-spacing: 0.3px;
+}
+.nav-link:hover { color: #ffc107 !important; }
+
+/* BUTTONS */
+.btn {
+  border-radius: 50px;
+  padding: 12px 35px;
+  font-weight: 600;
+  transition: 0.3s ease;
+}
+.btn-success { background: #1f7a4c; border: none; }
+.btn-success:hover { background: #14532d; transform: translateY(-3px); }
+.btn-outline-success { border: 2px solid #1f7a4c; color: #1f7a4c; }
+.btn-outline-success:hover { background: #1f7a4c; color: white; }
+
+/* SECTION */
+.section-green {
+  background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+  padding: 80px 0;
+}
+
+/* SECTION TITLE */
+.section-title {
+  font-size: 2.3rem;
+  font-weight: 800;
+  color: #198754;
+  position: relative;
+  display: inline-block;
+  margin-bottom: 2.5rem;
+}
+.section-title::after {
+  content: '';
+  position: absolute;
+  bottom: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 70px;
+  height: 4px;
+  background: linear-gradient(90deg, #198754, #20c997);
+  border-radius: 2px;
+}
+.section-title.left::after { left: 0; transform: none; }
+
+/* VALUE CARDS */
+.value-card {
+  background: white;
+  border-radius: 20px;
+  padding: 35px 25px;
+  text-align: center;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+  transition: all 0.3s ease;
+  height: 100%;
+}
+.value-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 15px 40px rgba(25,135,84,0.2);
+}
+.value-icon {
+  width: 75px;
+  height: 75px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #e8f5e9, #c8e6c9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 20px;
+  font-size: 2rem;
+  color: #198754;
+  transition: all 0.3s ease;
+}
+.value-card:hover .value-icon {
+  background: linear-gradient(135deg, #198754, #20c997);
+  color: white;
+  transform: rotate(10deg);
+}
+.value-card h5 { font-weight: 700; color: #198754; margin-bottom: 10px; }
+.value-card p { color: #666; font-size: 0.95rem; margin: 0; }
+
+/* HIGHLIGHT BOX */
+.highlight-box {
+  background: linear-gradient(135deg, #198754, #20c997);
+  border-radius: 20px;
+  padding: 35px;
+  color: white;
+}
+.highlight-box p { font-size: 1.2rem; line-height: 1.9; margin: 0; }
+
+/* QUOTE BOX */
+.quote-box {
+  background: white;
+  border-left: 6px solid #198754;
+  border-radius: 0 15px 15px 0;
+  padding: 25px 30px;
+  box-shadow: 0 5px 20px rgba(0,0,0,0.06);
+  font-size: 1.2rem;
+  font-style: italic;
+  color: #198754;
+  line-height: 1.8;
+}
+
+/* STAT BOX */
+.stat-box {
+  background: white;
+  border-radius: 20px;
+  padding: 30px 20px;
+  text-align: center;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+  transition: all 0.3s ease;
+}
+.stat-box:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 15px 40px rgba(25,135,84,0.2);
+}
+.stat-number {
+  font-size: 3rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, #198754, #20c997);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.stat-label { font-size: 1rem; color: #666; font-weight: 500; }
+
+/* TEAM CARDS */
+.team-card {
+  background: white;
+  border-radius: 20px;
+  padding: 35px 25px;
+  text-align: center;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+  transition: all 0.3s ease;
+  height: 100%;
+}
+.team-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 20px 40px rgba(25,135,84,0.25);
+}
+.team-avatar {
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #198754, #20c997);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 20px;
+  font-size: 2.5rem;
+  color: white;
+  font-weight: 700;
+}
+.team-card h5 { font-weight: 700; color: #198754; margin-bottom: 5px; }
+.team-card p { color: #888; font-size: 0.9rem; margin: 0; }
+.badge-role {
+  background: linear-gradient(135deg, #e8f5e9, #c8e6c9);
+  color: #198754;
+  padding: 5px 15px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  display: inline-block;
+  margin-top: 10px;
+}
+.portfolio-btn {
+  display: inline-block;
+  padding: 10px 25px;
+  background: #1f7a4c;
+  color: white;
+  border-radius: 25px;
+  text-decoration: none;
+  transition: 0.3s;
+  margin-top: 10px;
+}
+.portfolio-btn:hover { background: #14532d; color: white; }
+
+/* CTA SECTION */
+.cta-section {
+  background: linear-gradient(135deg, #198754, #20c997);
+  padding: 80px 0;
+  text-align: center;
+  color: white;
+}
+.cta-section h2 { font-size: 2.5rem; font-weight: 800; color: white; }
+.btn-cta {
+  background: white;
+  color: #198754;
+  border: none;
+  border-radius: 50px;
+  padding: 15px 40px;
+  font-weight: 700;
+  font-size: 1.1rem;
+  transition: all 0.3s ease;
+  box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+}
+.btn-cta:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+  color: #198754;
+}
+
+/* FOOTER */
+footer { background: #198754 !important; color: white; }
+footer a { transition: all 0.3s ease; }
+footer a:hover { color: #ffd700 !important; }
+
+/* FADE IN ANIMATION */
+.fade-in {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: all 0.8s ease;
+}
+.fade-in.show { opacity: 1; transform: translateY(0); }
+
+/* RESPONSIVE */
+@media (max-width: 991px) { .navbar-brand img { height: 60px; } }
+@media (max-width: 768px) {
+  .section-title { font-size: 1.8rem; }
+}
