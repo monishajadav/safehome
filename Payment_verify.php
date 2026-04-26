@@ -74,7 +74,7 @@ if ($stmt->execute()) {
 
     $stmt->close();
     $conn->close();
-    header('Location: thank_you.php');
+   header('Location: thank_you.php?name='.urlencode($full_name).'&amount='.$amount.'&dtype='.urlencode($donation_type).'&id='.urlencode($payment_id));
     exit;
 
 } else {

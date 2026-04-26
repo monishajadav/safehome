@@ -44,16 +44,20 @@ if (isset($_GET['delete'])) {
 // ── Filter ────────────────────────────────────────────────────────────────────
 $filter = isset($_GET['filter']) ? $_GET['filter'] : 'all';
 if ($filter === 'pending') {
-    $sql = "SELECT * FROM internship_applications WHERE status='pending' ORDER BY applied_at DESC";
+    $sql = "SELECT * FROM internship_applications WHERE status='pending' ORDER BY id DESC";
 } elseif ($filter === 'approved') {
-    $sql = "SELECT * FROM internship_applications WHERE status='approved' ORDER BY applied_at DESC";
+    $sql = "SELECT * FROM internship_applications WHERE status='approved' ORDER BY id DESC";
 } elseif ($filter === 'rejected') {
-    $sql = "SELECT * FROM internship_applications WHERE status='rejected' ORDER BY applied_at DESC";
+    $sql = "SELECT * FROM internship_applications WHERE status='rejected' ORDER BY id DESC";
 } else {
-    $sql = "SELECT * FROM internship_applications ORDER BY applied_at DESC";
+    $sql = "SELECT * FROM internship_applications ORDER BY id DESC";
 }
 
 $result = mysqli_query($conn, $sql);
+
+if (!$result) {
+    die("Query failed: " . mysqli_error($conn) . "<br>SQL: " . $sql);
+}
 
 // Load into array (so we can loop twice: table + modals)
 $applications = [];
@@ -307,14 +311,18 @@ $rejected = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(*) AS c FROM in
                         <?php foreach ($applications as $i => $row):
                             $status = $row['status'] ?? 'pending';
                             $statusIcon = $status==='approved' ? 'bi-check-circle-fill' : ($status==='rejected' ? 'bi-x-circle-fill' : 'bi-clock-fill');
+                            // Support both full_name and name column
+                            $fullName = $row['full_name'] ?? $row['name'] ?? 'N/A';
+                            // Support both applied_at and created_at column
+                            $appliedAt = $row['applied_at'] ?? $row['created_at'] ?? null;
                         ?>
                         <tr>
                             <td><?php echo $i + 1; ?></td>
                             <td>
                                 <div class="d-flex align-items-center gap-2">
-                                    <div class="i-avatar"><?php echo strtoupper(substr($row['full_name'], 0, 1)); ?></div>
+                                    <div class="i-avatar"><?php echo strtoupper(substr($fullName, 0, 1)); ?></div>
                                     <div>
-                                        <strong><?php echo htmlspecialchars($row['full_name']); ?></strong><br>
+                                        <strong><?php echo htmlspecialchars($fullName); ?></strong><br>
                                         <small class="text-muted"><?php echo htmlspecialchars($row['email']); ?></small>
                                     </div>
                                 </div>
@@ -333,7 +341,7 @@ $rejected = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(*) AS c FROM in
                                     <?php echo ucfirst($status); ?>
                                 </span>
                             </td>
-                            <td><small><?php echo date('d M Y', strtotime($row['applied_at'])); ?></small></td>
+                            <td><small><?php echo $appliedAt ? date('d M Y', strtotime($appliedAt)) : 'N/A'; ?></small></td>
                             <td>
                                 <button class="btn btn-sm btn-outline-primary me-1"
                                         data-bs-toggle="modal"
@@ -388,7 +396,9 @@ $rejected = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(*) AS c FROM in
      MODALS — outside table & main-wrap
 ════════════════════════════════════════════════════ -->
 <?php foreach ($applications as $row):
-    $status = $row['status'] ?? 'pending';
+    $status   = $row['status'] ?? 'pending';
+    $fullName = $row['full_name'] ?? $row['name'] ?? 'N/A';
+    $appliedAt = $row['applied_at'] ?? $row['created_at'] ?? null;
 ?>
 <div class="modal fade" id="viewModal<?php echo $row['id']; ?>" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered">
@@ -396,14 +406,14 @@ $rejected = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(*) AS c FROM in
             <div class="modal-header">
                 <h5 class="modal-title">
                     <i class="bi bi-person-badge-fill me-2"></i>
-                    <?php echo htmlspecialchars($row['full_name']); ?>'s Application
+                    <?php echo htmlspecialchars($fullName); ?>'s Application
                 </h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body p-4">
                 <div class="text-center mb-4">
-                    <div class="i-avatar i-avatar-lg mx-auto"><?php echo strtoupper(substr($row['full_name'], 0, 1)); ?></div>
-                    <h5 class="mt-3 mb-1"><?php echo htmlspecialchars($row['full_name']); ?></h5>
+                    <div class="i-avatar i-avatar-lg mx-auto"><?php echo strtoupper(substr($fullName, 0, 1)); ?></div>
+                    <h5 class="mt-3 mb-1"><?php echo htmlspecialchars($fullName); ?></h5>
                     <span class="status-badge status-<?php echo $status; ?>"><?php echo ucfirst($status); ?></span>
                 </div>
                 <div class="detail-row">
@@ -432,7 +442,7 @@ $rejected = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(*) AS c FROM in
                 </div>
                 <div class="detail-row">
                     <span class="detail-label"><i class="bi bi-calendar-check me-2"></i>Applied On</span>
-                    <span><?php echo date('d M Y, h:i A', strtotime($row['applied_at'])); ?></span>
+                    <span><?php echo $appliedAt ? date('d M Y, h:i A', strtotime($appliedAt)) : 'N/A'; ?></span>
                 </div>
                 <?php if (!empty($row['message'])): ?>
                 <div class="mt-3" style="background:#f6fbf7; border-radius:10px; padding:14px; border-left:3px solid var(--accent);">

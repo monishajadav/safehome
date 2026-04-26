@@ -55,7 +55,11 @@ if ($filter === 'pending') {
 
 $result = mysqli_query($conn, $sql);
 
-// Load into array so we can loop multiple times if needed
+// Add this to catch the real error
+if (!$result) {
+    die("Query failed: " . mysqli_error($conn) . "<br>SQL: " . $sql);
+}
+
 $volunteers = [];
 while ($row = mysqli_fetch_assoc($result)) {
     $volunteers[] = $row;

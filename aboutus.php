@@ -818,7 +818,8 @@ $username = $is_logged_in ? $_SESSION['username'] : '';
           <div class="team-avatar">P</div>
           <h5>Prarthna Sajeev Kumar</h5>
           <p>UI/UX Designer</p>
-          <span class="badge-role">BCA Final Year</span>
+          <span class="badge-role">BCA Final Year</span><br><br>
+            <a href="prarthana.php" class="portfolio-btn">Portfolio</a>
         </div>
       </div>
 
