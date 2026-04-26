@@ -178,7 +178,7 @@ while($row = mysqli_fetch_assoc($result)) $wishes_data[] = $row;
         <div class="nav-item"><a href="view_volunteers.php"><i class="bi bi-person-check-fill"></i> Volunteers</a></div>
         <div class="nav-item"><a href="view_donations.php"><i class="bi bi-cash-coin"></i> Donations</a></div>
         <div class="nav-item"><a href="view_messages.php"><i class="bi bi-chat-dots-fill"></i> Messages</a></div>
-        <div class="nav-item"><a href="view_wishes.php" class="active"><i class="bi bi-stars"></i> Feedback</a></div>
+        <div class="nav-item"><a href="view_wishes.php" class="active"><i class="bi bi-stars"></i> Wishes</a></div>
         <div class="nav-item"><a href="view_internships.php"><i class="bi bi-briefcase-fill"></i> Internships</a></div>
         <div class="nav-label mt-2">Content</div>
         <div class="nav-item"><a href="view_gallery.php"><i class="bi bi-images"></i> Gallery</a></div>
