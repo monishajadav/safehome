@@ -339,12 +339,157 @@ body {
       animation: none;
     }
 
-    .footer-note {
-      background: rgba(255, 255, 255, 0.95);
-      padding: 20px;
-      text-align: center;
-      font-size: 14px;
-    }
+    /* ================= FOOTER ================= */
+
+.footer {
+  background: linear-gradient(135deg, #14532d 0%, #1e8449 50%, #1f7a4c 100%);
+  color: #fff;
+  padding: 60px 20px 20px;
+  font-family: 'Poppins', sans-serif;
+  margin-top: 50px;
+}
+
+.footer-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 40px;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.footer-box h2 {
+  font-size: 1.5rem;
+  margin-bottom: 20px;
+  font-weight: 800;
+  color: #f4d03f;
+}
+
+.footer-box h3 {
+  font-size: 1.2rem;
+  margin-bottom: 20px;
+  font-weight: 700;
+  color: #f4d03f;
+  border-bottom: 2px solid rgba(244, 208, 63, 0.3);
+  padding-bottom: 10px;
+}
+
+.footer-box p {
+  font-size: 0.95rem;
+  line-height: 1.8;
+  margin-bottom: 10px;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.footer-box ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.footer-box ul li {
+  margin: 12px 0;
+}
+
+.footer-box ul li a {
+  color: #fff;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  display: inline-block;
+  font-size: 0.95rem;
+}
+
+.footer-box ul li a:hover {
+  color: #f4d03f;
+  transform: translateX(8px);
+}
+
+/* Donate Button */
+.donate-btn {
+  display: inline-block;
+  margin-top: 15px;
+  padding: 12px 30px;
+  background: linear-gradient(135deg, #f4d03f, #f1c40f);
+  color: #000;
+  border-radius: 50px;
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  box-shadow: 0 5px 15px rgba(244, 208, 63, 0.3);
+}
+
+.donate-btn:hover {
+  background: linear-gradient(135deg, #f1c40f, #f39c12);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(244, 208, 63, 0.5);
+  color: #000;
+}
+
+/* Social Icons */
+.social-icons {
+  text-align: center;
+  margin: 40px 0 30px;
+  padding: 30px 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.social-icons a {
+  margin: 0 12px;
+  font-size: 28px;
+  text-decoration: none;
+  color: white;
+  transition: all 0.3s ease;
+  display: inline-block;
+}
+
+.social-icons a:hover {
+  color: #f4d03f;
+  transform: scale(1.2) translateY(-5px);
+}
+
+/* Footer Bottom */
+.footer-bottom {
+  text-align: center;
+  padding-top: 20px;
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.footer-bottom a {
+  color: #f4d03f;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  margin: 0 8px;
+}
+
+.footer-bottom a:hover {
+  color: #fff;
+  text-decoration: underline;
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .footer-container {
+    grid-template-columns: 1fr;
+    gap: 30px;
+  }
+
+  .footer-box {
+    text-align: center;
+  }
+
+  .footer-box ul li a:hover {
+    transform: translateX(0);
+    color: #f4d03f;
+  }
+
+  .social-icons a {
+    font-size: 24px;
+    margin: 0 8px;
+  }
+}
 
     .section-title {
       font-size: 2rem;
@@ -540,22 +685,20 @@ body {
 </section>
 
   <!-- Google Map -->
-  <section>
-    <iframe
-      src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d248849.886539092!2d77.49085452026408!3d12.953945613232264!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bae1670c9b44e6d%3A0xf8dfc3e8517e4fe0!2sBengaluru%2C%20Karnataka!5e0!3m2!1sen!2sin!4v1234567890123!5m2!1sen!2sin"
-      width="100%"
-      height="400"
-      style="border:0;"
-      allowfullscreen=""
-      loading="lazy"
-      referrerpolicy="no-referrer-when-downgrade">
-    </iframe>
-  </section>
+<section>
+  <iframe
+    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3888.0!2d74.9729059!3d13.0613613!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3ba4ab25da9e6b5b%3A0x19b2bd53448f91f9!2sAlva's+Degree+College+(UG)!5e0!3m2!1sen!2sin!4v1714900000000!5m2!1sen!2sin"
+    width="100%"
+    height="400"
+    style="border:0;"
+    allowfullscreen=""
+    loading="lazy"
+    referrerpolicy="no-referrer-when-downgrade">
+  </iframe>
+</section>
 
   <!-- Footer Note -->
-  <div class="footer-note">
-    <i class="fas fa-shield-alt"></i> We respect your privacy. Your information is secure and will never be shared with third parties.
-  </div>
+<?php include "./includes/footer.php" ?>
 
   <!-- Bootstrap JS -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>

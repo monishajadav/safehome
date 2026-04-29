@@ -288,20 +288,157 @@ body {
     }
 
     /* FOOTER */
-    footer {
-      background: rgba(25,135,84,0.95) !important;
-      backdrop-filter: blur(10px);
-      box-shadow: 0 -4px 20px rgba(0,0,0,0.1);
-    }
+    /* ================= FOOTER ================= */
 
-    footer a {
-      transition: all 0.3s ease;
-    }
+.footer {
+  background: linear-gradient(135deg, #14532d 0%, #1e8449 50%, #1f7a4c 100%);
+  color: #fff;
+  padding: 60px 20px 20px;
+  font-family: 'Poppins', sans-serif;
+  margin-top: 50px;
+}
 
-    footer a:hover {
-      color: #ffd700 !important;
-      transform: translateX(5px);
-    }
+.footer-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 40px;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.footer-box h2 {
+  font-size: 1.5rem;
+  margin-bottom: 20px;
+  font-weight: 800;
+  color: #f4d03f;
+}
+
+.footer-box h3 {
+  font-size: 1.2rem;
+  margin-bottom: 20px;
+  font-weight: 700;
+  color: #f4d03f;
+  border-bottom: 2px solid rgba(244, 208, 63, 0.3);
+  padding-bottom: 10px;
+}
+
+.footer-box p {
+  font-size: 0.95rem;
+  line-height: 1.8;
+  margin-bottom: 10px;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.footer-box ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.footer-box ul li {
+  margin: 12px 0;
+}
+
+.footer-box ul li a {
+  color: #fff;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  display: inline-block;
+  font-size: 0.95rem;
+}
+
+.footer-box ul li a:hover {
+  color: #f4d03f;
+  transform: translateX(8px);
+}
+
+/* Donate Button */
+.donate-btn {
+  display: inline-block;
+  margin-top: 15px;
+  padding: 12px 30px;
+  background: linear-gradient(135deg, #f4d03f, #f1c40f);
+  color: #000;
+  border-radius: 50px;
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  box-shadow: 0 5px 15px rgba(244, 208, 63, 0.3);
+}
+
+.donate-btn:hover {
+  background: linear-gradient(135deg, #f1c40f, #f39c12);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(244, 208, 63, 0.5);
+  color: #000;
+}
+
+/* Social Icons */
+.social-icons {
+  text-align: center;
+  margin: 40px 0 30px;
+  padding: 30px 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.social-icons a {
+  margin: 0 12px;
+  font-size: 28px;
+  text-decoration: none;
+  color: white;
+  transition: all 0.3s ease;
+  display: inline-block;
+}
+
+.social-icons a:hover {
+  color: #f4d03f;
+  transform: scale(1.2) translateY(-5px);
+}
+
+/* Footer Bottom */
+.footer-bottom {
+  text-align: center;
+  padding-top: 20px;
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.footer-bottom a {
+  color: #f4d03f;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  margin: 0 8px;
+}
+
+.footer-bottom a:hover {
+  color: #fff;
+  text-decoration: underline;
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .footer-container {
+    grid-template-columns: 1fr;
+    gap: 30px;
+  }
+
+  .footer-box {
+    text-align: center;
+  }
+
+  .footer-box ul li a:hover {
+    transform: translateX(0);
+    color: #f4d03f;
+  }
+
+  .social-icons a {
+    font-size: 24px;
+    margin: 0 8px;
+  }
+}
 
     /* ANIMATION ON SCROLL */
     .fade-in {
@@ -451,31 +588,7 @@ body {
   </section>
 
   <!-- FOOTER -->
-  <footer class="bg-success text-white py-4">
-    <div class="container">
-      <div class="row">
-        <div class="col-md-4 text-center text-md-start mb-3 mb-md-0">
-          <h5 class="fw-bold"><i class="bi bi-house-heart-fill"></i> Safe & Home Foundation</h5>
-          <p class="mb-0">Caring for all generations with love</p>
-        </div>
-        <div class="col-md-4 text-center mb-3 mb-md-0">
-          <h5 class="fw-bold">Quick Links</h5>
-          <a href="aboutus.php" class="text-white d-block mb-1"><i class="bi bi-arrow-right"></i> About Us</a>
-          <a href="contact.php" class="text-white d-block mb-1"><i class="bi bi-arrow-right"></i> Contact</a>
-          <a href="donate.php" class="text-white d-block"><i class="bi bi-arrow-right"></i> Donate</a>
-          <a href="guidelines.php" class="text-white d-block"><i class="bi bi-arrow-right"></i>Guidelines</a>
-        </div>
-        <div class="col-md-4 text-center text-md-end">
-          <h5 class="fw-bold">Follow Us</h5>
-          <a href="#" class="text-white me-3 fs-4"><i class="bi bi-facebook"></i></a>
-          <a href="#" class="text-white me-3 fs-4"><i class="bi bi-instagram"></i></a>
-          <a href="#" class="text-white fs-4"><i class="bi bi-twitter"></i></a>
-        </div>
-      </div>
-      <hr class="bg-white mt-4 opacity-25">
-      <p class="text-center mb-0">© 2025 Safe & Home Foundation | All Rights Reserved | Made with <i class="bi bi-heart-fill"></i> for a better tomorrow</p>
-    </div>
-  </footer>
+  <?php include "./includes/footer.php" ?>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
 

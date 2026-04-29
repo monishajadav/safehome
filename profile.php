@@ -1,4 +1,6 @@
 <?php
+ini_set('display_errors', 1);
+error_reporting(E_ALL);
 session_start();
 include('includes/db_connect.php');
 
@@ -32,7 +34,8 @@ if(isset($_POST['upload_picture'])) {
                 if($user['profile_picture'] && file_exists($user['profile_picture'])) unlink($user['profile_picture']);
                 mysqli_query($conn, "UPDATE users SET profile_picture='$upload_path' WHERE id='$user_id'");
                 $success = "Profile picture updated successfully!";
-                $user = mysqli_fetch_assoc(mysqli_query($conn, $user_query));
+                $user_result = mysqli_query($conn, $user_query);
+                $user = mysqli_fetch_assoc($user_result);
             } else { $error = "Error uploading file!"; }
         } else { $error = "Invalid file type. Only JPG, JPEG, PNG & GIF allowed!"; }
     }
@@ -50,7 +53,8 @@ if(isset($_POST['update_profile'])) {
         if(mysqli_query($conn, "UPDATE users SET username='$username', email='$email', phone='$phone' WHERE id='$user_id'")) {
             $_SESSION['username'] = $username;
             $success = "Profile updated successfully!";
-            $user = mysqli_fetch_assoc(mysqli_query($conn, $user_query));
+            $user_result = mysqli_query($conn, $user_query);
+            $user = mysqli_fetch_assoc($user_result);
         } else { $error = "Error: " . mysqli_error($conn); }
     }
 }
@@ -72,16 +76,16 @@ if(isset($_POST['change_password'])) {
 }
 
 // ── Stats ─────────────────────────────────────────────────────────────────────
-$donations_result = @mysqli_query($conn, "SELECT COUNT(*) as total_donations, COALESCE(SUM(amount),0) as total_amount FROM donations WHERE user_id='$user_id'");
+$donations_result = mysqli_query($conn, "SELECT COUNT(*) as total_donations, COALESCE(SUM(amount),0) as total_amount FROM donations WHERE email='{$user['email']}'");
 $donations_stats  = $donations_result ? mysqli_fetch_assoc($donations_result) : ['total_donations'=>0,'total_amount'=>0];
 
-$volunteer_result = @mysqli_query($conn, "SELECT COUNT(*) as total FROM volunteer_applications WHERE email='{$user['email']}'");
+$volunteer_result = mysqli_query($conn, "SELECT COUNT(*) as total FROM volunteer_applications WHERE email='{$user['email']}'");
 $volunteer_count  = $volunteer_result ? mysqli_fetch_assoc($volunteer_result)['total'] : 0;
 
-$messages_result  = @mysqli_query($conn, "SELECT COUNT(*) as total FROM contact_messages WHERE email='{$user['email']}'");
+$messages_result  = mysqli_query($conn, "SELECT COUNT(*) as total FROM contact_messages WHERE email='{$user['email']}'");
 $messages_count   = $messages_result ? mysqli_fetch_assoc($messages_result)['total'] : 0;
 
-$internship_result = @mysqli_query($conn, "SELECT COUNT(*) as total FROM internship_applications WHERE email='{$user['email']}'");
+$internship_result = mysqli_query($conn, "SELECT COUNT(*) as total FROM internship_applications WHERE email='{$user['email']}'");
 $internship_count  = $internship_result ? mysqli_fetch_assoc($internship_result)['total'] : 0;
 ?>
 <!doctype html>
@@ -151,14 +155,12 @@ $internship_count  = $internship_result ? mysqli_fetch_assoc($internship_result)
     .nav-tabs .nav-link:hover { color:#198754; background:transparent; }
     .nav-tabs .nav-link.active { color:#198754; background:transparent; border-bottom:3px solid #198754; }
 
-    /* ── Status badges ── */
     .badge-status { padding:5px 14px; border-radius:20px; font-size:0.82rem; font-weight:600; display:inline-flex; align-items:center; gap:5px; }
     .badge-pending  { background:#fef9c3; color:#854d0e; }
     .badge-approved { background:#d1fae5; color:#065f46; }
     .badge-rejected { background:#fee2e2; color:#991b1b; }
     .badge-completed{ background:#dbeafe; color:#1e40af; }
 
-    /* ── Status info box ── */
     .status-notice { border-radius:12px; padding:18px 20px; margin-bottom:16px; display:flex; align-items:flex-start; gap:14px; }
     .status-notice.pending  { background:#fef9c3; border-left:4px solid #f59e0b; }
     .status-notice.approved { background:#d1fae5; border-left:4px solid #10b981; }
@@ -236,8 +238,8 @@ $internship_count  = $internship_result ? mysqli_fetch_assoc($internship_result)
       <div class="profile-card">
         <div class="profile-header">
           <div class="profile-avatar">
-            <?php if($user['profile_picture'] && file_exists($user['profile_picture'])): ?>
-              <img src="<?php echo $user['profile_picture']; ?>" alt="Profile Picture">
+            <?php if(!empty($user['profile_picture']) && file_exists($user['profile_picture'])): ?>
+              <img src="<?php echo htmlspecialchars($user['profile_picture']); ?>" alt="Profile Picture">
             <?php else: ?>
               <i class="bi bi-person-circle"></i>
             <?php endif; ?>
@@ -313,18 +315,42 @@ $internship_count  = $internship_result ? mysqli_fetch_assoc($internship_result)
       <!-- TABS -->
       <div class="profile-card">
         <ul class="nav nav-tabs" id="profileTabs" role="tablist">
-          <li class="nav-item"><button class="nav-link active" data-bs-toggle="tab" data-bs-target="#profile" type="button"><i class="bi bi-person"></i> Profile</button></li>
-          <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#donations" type="button"><i class="bi bi-cash-stack"></i> Donations</button></li>
-          <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#volunteer" type="button"><i class="bi bi-hand-thumbs-up"></i> Volunteer</button></li>
-          <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#internship" type="button"><i class="bi bi-briefcase"></i> Internship</button></li>
-          <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#messages" type="button"><i class="bi bi-chat-dots"></i> Messages</button></li>
-          <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#security" type="button"><i class="bi bi-shield-lock"></i> Security</button></li>
+          <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile" type="button" role="tab">
+              <i class="bi bi-person"></i> Profile
+            </button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button class="nav-link" id="donations-tab" data-bs-toggle="tab" data-bs-target="#donations" type="button" role="tab">
+              <i class="bi bi-cash-stack"></i> Donations
+            </button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button class="nav-link" id="volunteer-tab" data-bs-toggle="tab" data-bs-target="#volunteer" type="button" role="tab">
+              <i class="bi bi-hand-thumbs-up"></i> Volunteer
+            </button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button class="nav-link" id="internship-tab" data-bs-toggle="tab" data-bs-target="#internship" type="button" role="tab">
+              <i class="bi bi-briefcase"></i> Internship
+            </button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button class="nav-link" id="messages-tab" data-bs-toggle="tab" data-bs-target="#messages" type="button" role="tab">
+              <i class="bi bi-chat-dots"></i> Messages
+            </button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button class="nav-link" id="security-tab" data-bs-toggle="tab" data-bs-target="#security" type="button" role="tab">
+              <i class="bi bi-shield-lock"></i> Security
+            </button>
+          </li>
         </ul>
 
-        <div class="tab-content mt-4">
+        <div class="tab-content" id="profileTabsContent">
 
           <!-- PROFILE TAB -->
-          <div class="tab-pane fade show active" id="profile" role="tabpanel">
+          <div class="tab-pane fade show active" id="profile" role="tabpanel" aria-labelledby="profile-tab">
             <h3 class="section-title"><i class="bi bi-person-fill"></i> Update Profile</h3>
             <form method="POST">
               <div class="row mb-3">
@@ -339,17 +365,17 @@ $internship_count  = $internship_result ? mysqli_fetch_assoc($internship_result)
               </div>
               <div class="mb-4">
                 <label class="form-label">Phone Number</label>
-                <input type="tel" class="form-control" name="phone" value="<?php echo htmlspecialchars($user['phone']); ?>">
+                <input type="tel" class="form-control" name="phone" value="<?php echo htmlspecialchars($user['phone'] ?? ''); ?>">
               </div>
               <button type="submit" name="update_profile" class="btn btn-success"><i class="bi bi-save"></i> Update Profile</button>
             </form>
           </div>
 
           <!-- DONATIONS TAB -->
-          <div class="tab-pane fade" id="donations" role="tabpanel">
+          <div class="tab-pane fade" id="donations" role="tabpanel" aria-labelledby="donations-tab">
             <h3 class="section-title"><i class="bi bi-cash-stack"></i> Donation History</h3>
             <?php
-            $dlist = @mysqli_query($conn, "SELECT * FROM donations WHERE user_id='$user_id' ORDER BY id DESC");
+            $dlist = mysqli_query($conn, "SELECT * FROM donations WHERE email='{$user['email']}' ORDER BY id DESC");
             if($dlist && mysqli_num_rows($dlist) > 0): ?>
               <div class="table-responsive">
                 <table class="table table-hover">
@@ -359,9 +385,9 @@ $internship_count  = $internship_result ? mysqli_fetch_assoc($internship_result)
                   <tbody>
                     <?php while($d = mysqli_fetch_assoc($dlist)): ?>
                     <tr>
-                      <td><?php echo date('M d, Y', strtotime($d['donated_at'] ?? $d['created_at'] ?? '')); ?></td>
+                      <td><?php echo date('M d, Y', strtotime($d['created_at'] ?? '')); ?></td>
                       <td><strong>₹<?php echo number_format($d['amount']); ?></strong></td>
-                      <td><?php echo htmlspecialchars($d['donation_type'] ?? $d['purpose'] ?? ''); ?></td>
+                      <td><?php echo htmlspecialchars($d['donation_type'] ?? ''); ?></td>
                       <td><span class="badge-status badge-completed"><i class="bi bi-check-circle-fill"></i> Completed</span></td>
                     </tr>
                     <?php endwhile; ?>
@@ -381,14 +407,12 @@ $internship_count  = $internship_result ? mysqli_fetch_assoc($internship_result)
             <?php endif; ?>
           </div>
 
-          <!-- ═══════════════════════════════════════════
-               VOLUNTEER TAB — shows REAL status from DB
-          ════════════════════════════════════════════ -->
-          <div class="tab-pane fade" id="volunteer" role="tabpanel">
+          <!-- VOLUNTEER TAB -->
+          <div class="tab-pane fade" id="volunteer" role="tabpanel" aria-labelledby="volunteer-tab">
             <h3 class="section-title"><i class="bi bi-hand-thumbs-up"></i> Volunteer Applications</h3>
             <?php
             $vlist = mysqli_query($conn, "SELECT * FROM volunteer_applications WHERE email='{$user['email']}' ORDER BY id DESC");
-            if(mysqli_num_rows($vlist) > 0): ?>
+            if($vlist && mysqli_num_rows($vlist) > 0): ?>
               <div class="table-responsive">
                 <table class="table table-hover align-middle">
                   <thead class="table-light">
@@ -397,17 +421,16 @@ $internship_count  = $internship_result ? mysqli_fetch_assoc($internship_result)
                   <tbody>
                     <?php while($vol = mysqli_fetch_assoc($vlist)):
                         $vstatus = $vol['status'] ?? 'pending';
-                        // Status notice messages
                         $notices = [
-                            'pending'  => ['class'=>'pending',  'icon'=>'bi-clock-fill',        'title'=>'Under Review',  'msg'=>'Your volunteer application is currently being reviewed by our team. We will update you soon!'],
-                            'approved' => ['class'=>'approved', 'icon'=>'bi-check-circle-fill',  'title'=>'Approved! 🎉', 'msg'=>'Congratulations! Your volunteer application has been approved. Our team will contact you shortly with next steps.'],
-                            'rejected' => ['class'=>'rejected', 'icon'=>'bi-x-circle-fill',      'title'=>'Not Selected', 'msg'=>'Unfortunately your application was not selected this time. You are welcome to apply again in the future.'],
+                            'pending'  => ['class'=>'pending',  'icon'=>'bi-clock-fill',       'title'=>'Under Review',   'msg'=>'Your volunteer application is currently being reviewed by our team. We will update you soon!'],
+                            'approved' => ['class'=>'approved', 'icon'=>'bi-check-circle-fill', 'title'=>'Approved! 🎉',  'msg'=>'Congratulations! Your volunteer application has been approved. Our team will contact you shortly with next steps.'],
+                            'rejected' => ['class'=>'rejected', 'icon'=>'bi-x-circle-fill',     'title'=>'Not Selected',   'msg'=>'Unfortunately your application was not selected this time. You are welcome to apply again in the future.'],
                         ];
                         $n = $notices[$vstatus] ?? $notices['pending'];
                     ?>
                     <tr>
-                      <td><?php echo date('M d, Y', strtotime($vol['created_at'])); ?></td>
-                      <td><strong><?php echo htmlspecialchars($vol['care_area']); ?></strong></td>
+                      <td><?php echo date('M d, Y', strtotime($vol['created_at'] ?? '')); ?></td>
+                      <td><strong><?php echo htmlspecialchars($vol['care_area'] ?? ''); ?></strong></td>
                       <td><small class="text-muted"><?php echo htmlspecialchars(mb_strimwidth($vol['message'] ?? '', 0, 50, '...')); ?></small></td>
                       <td>
                         <?php if($vstatus === 'approved'): ?>
@@ -419,7 +442,6 @@ $internship_count  = $internship_result ? mysqli_fetch_assoc($internship_result)
                         <?php endif; ?>
                       </td>
                     </tr>
-                    <!-- Status notice below each row -->
                     <tr>
                       <td colspan="4" style="padding:0 0 10px 0; border:none;">
                         <div class="status-notice <?php echo $n['class']; ?>">
@@ -444,13 +466,11 @@ $internship_count  = $internship_result ? mysqli_fetch_assoc($internship_result)
             <?php endif; ?>
           </div>
 
-          <!-- ═══════════════════════════════════════════
-               INTERNSHIP TAB — NEW, shows real status
-          ════════════════════════════════════════════ -->
-          <div class="tab-pane fade" id="internship" role="tabpanel">
+          <!-- INTERNSHIP TAB -->
+          <div class="tab-pane fade" id="internship" role="tabpanel" aria-labelledby="internship-tab">
             <h3 class="section-title"><i class="bi bi-briefcase-fill"></i> Internship Applications</h3>
             <?php
-            $ilist = @mysqli_query($conn, "SELECT * FROM internship_applications WHERE email='{$user['email']}' ORDER BY applied_at DESC");
+            $ilist = mysqli_query($conn, "SELECT * FROM internship_applications WHERE email='{$user['email']}' ORDER BY applied_at DESC");
             if($ilist && mysqli_num_rows($ilist) > 0): ?>
               <div class="table-responsive">
                 <table class="table table-hover align-middle">
@@ -468,17 +488,17 @@ $internship_count  = $internship_result ? mysqli_fetch_assoc($internship_result)
                         $in = $inotices[$istatus] ?? $inotices['pending'];
                     ?>
                     <tr>
-                      <td><?php echo date('M d, Y', strtotime($intern['applied_at'])); ?></td>
-                      <td><?php echo htmlspecialchars($intern['college']); ?></td>
-                      <td><?php echo htmlspecialchars($intern['course']); ?> / Yr <?php echo htmlspecialchars($intern['year']); ?></td>
+                      <td><?php echo date('M d, Y', strtotime($intern['applied_at'] ?? '')); ?></td>
+                      <td><?php echo htmlspecialchars($intern['college'] ?? ''); ?></td>
+                      <td><?php echo htmlspecialchars($intern['course'] ?? ''); ?> / Yr <?php echo htmlspecialchars($intern['year'] ?? ''); ?></td>
                       <td>
                         <span style="background:linear-gradient(135deg,#e8f5e9,#c8e6c9);color:#1a472a;padding:3px 11px;border-radius:20px;font-size:.76rem;font-weight:600;">
-                          <?php echo htmlspecialchars($intern['area']); ?>
+                          <?php echo htmlspecialchars($intern['area'] ?? ''); ?>
                         </span>
                       </td>
                       <td>
                         <span style="background:linear-gradient(135deg,#e3f2fd,#bbdefb);color:#1565c0;padding:3px 11px;border-radius:20px;font-size:.76rem;font-weight:600;">
-                          <?php echo htmlspecialchars($intern['duration']); ?>
+                          <?php echo htmlspecialchars($intern['duration'] ?? ''); ?>
                         </span>
                       </td>
                       <td>
@@ -491,7 +511,6 @@ $internship_count  = $internship_result ? mysqli_fetch_assoc($internship_result)
                         <?php endif; ?>
                       </td>
                     </tr>
-                    <!-- Status notice -->
                     <tr>
                       <td colspan="6" style="padding:0 0 10px 0; border:none;">
                         <div class="status-notice <?php echo $in['class']; ?>">
@@ -517,11 +536,11 @@ $internship_count  = $internship_result ? mysqli_fetch_assoc($internship_result)
           </div>
 
           <!-- MESSAGES TAB -->
-          <div class="tab-pane fade" id="messages" role="tabpanel">
+          <div class="tab-pane fade" id="messages" role="tabpanel" aria-labelledby="messages-tab">
             <h3 class="section-title"><i class="bi bi-chat-dots"></i> Contact Messages</h3>
             <?php
             $mlist = mysqli_query($conn, "SELECT * FROM contact_messages WHERE email='{$user['email']}' ORDER BY id DESC");
-            if(mysqli_num_rows($mlist) > 0): ?>
+            if($mlist && mysqli_num_rows($mlist) > 0): ?>
               <div class="table-responsive">
                 <table class="table table-hover">
                   <thead class="table-light">
@@ -530,8 +549,8 @@ $internship_count  = $internship_result ? mysqli_fetch_assoc($internship_result)
                   <tbody>
                     <?php while($msg = mysqli_fetch_assoc($mlist)): ?>
                     <tr>
-                      <td><?php echo isset($msg['created_at']) ? date('M d, Y', strtotime($msg['created_at'])) : 'N/A'; ?></td>
-                      <td><?php echo htmlspecialchars($msg['name']); ?></td>
+                      <td><?php echo !empty($msg['created_at']) ? date('M d, Y', strtotime($msg['created_at'])) : 'N/A'; ?></td>
+                      <td><?php echo htmlspecialchars($msg['name'] ?? ''); ?></td>
                       <td><small class="text-muted"><?php echo htmlspecialchars(mb_strimwidth($msg['message'] ?? '', 0, 80, '...')); ?></small></td>
                     </tr>
                     <?php endwhile; ?>
@@ -548,7 +567,7 @@ $internship_count  = $internship_result ? mysqli_fetch_assoc($internship_result)
           </div>
 
           <!-- SECURITY TAB -->
-          <div class="tab-pane fade" id="security" role="tabpanel">
+          <div class="tab-pane fade" id="security" role="tabpanel" aria-labelledby="security-tab">
             <h3 class="section-title"><i class="bi bi-shield-lock"></i> Change Password</h3>
             <form method="POST">
               <div class="mb-3">
