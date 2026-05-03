@@ -1,3 +1,4 @@
+
 <?php
 session_start();
 
@@ -36,8 +37,8 @@ $_SESSION['otp_time']   = time();          // used to check 5-min expiry
 $_SESSION['otp_verified'] = false;         // reset any previous verification
 
 // --- Gmail credentials ---
-define('GMAIL_ADDRESS',  'monishajadav7@gmail.com');
-define('GMAIL_APP_PASS', 'xahvwsaeyctzadqv');        // App Password — NO spaces
+define('GMAIL_ADDRESS',  'moni25jadav@gmail.com');
+define('GMAIL_APP_PASS', 'eeji lbkc vaze nvbk');        // App Password — NO spaces
 
 $mail = new PHPMailer(true);
 
